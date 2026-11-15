@@ -1,0 +1,53 @@
+# Scanner configuration for the sample legacy framework.
+# Relative paths are resolved against the folder of this file.
+
+project:
+  name: Legacy Shop Framework (sample)
+  root: legacy-framework              # the framework to scan
+
+library:
+  # Source folders under project.root that hold the library code.
+  sourceDirs:
+    - src/main/java
+    - src/test/java
+  # Only these packages (and their sub-packages) are catalogued, compared and checked.
+  # Leave empty to scan every package.
+  includePackages:
+    - com.legacy.framework
+  excludePackages: []
+  excludePaths:
+    - "**/generated/**"
+  includePrivateMethods: true
+
+usages:
+  # Where to count calls of library methods. Empty = library.sourceDirs.
+  sourceDirs: []
+
+features:
+  # Folders with Cucumber .feature files, to count step usages. Empty = do not count.
+  dirs:
+    - src/test/resources
+
+duplicates:
+  enabled: true
+  minStatements: 2          # ignore smaller methods (getters, setters, one-liners)
+  minTokens: 25
+  nearMissThreshold: 0.80   # share of identical code fragments for a "near copy"
+  sameJobThreshold: 0.85    # share of identical UI/API actions (in order) for "same job"
+  minActions: 2             # methods with fewer UI/API actions are not compared by job
+
+rules:
+  enabled: true
+  disabled: []              # e.g. [METHOD_NAME_VERB, REPEATED_LITERAL]
+  longMethodLines: 40
+  maxParameters: 4
+  godClassMethods: 30
+  repeatedLiteralCount: 3
+  stringIfChainLength: 3
+
+report:
+  outputDir: scanner-report  # relative to this file
+  formats: [html, json, csv]
+
+git:
+  blame: true               # authors per method and finding (needs git and a repository)

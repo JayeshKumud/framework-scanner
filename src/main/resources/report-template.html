@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Framework Scan Report</title>
+<style>
+:root {
+  --bg: #f6f7f9; --surface: #ffffff; --surface-2: #f0f2f5; --text: #1d2330; --muted: #5d6677; --border: #dde1e7;
+  --accent: #2f5fd0; --accent-soft: #e6edfb; --code-bg: #f7f8fa;
+  --high: #c62828; --high-soft: #fdecea; --medium: #b45f06; --medium-soft: #fdf1e3;
+  --low: #2f6f9f; --low-soft: #e7f1f8; --info: #5d6677; --info-soft: #eef0f3;
+  --add: #e6f4ea; --del: #fdecea; --chg: #fff6d6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12151b; --surface: #1a1f27; --surface-2: #222833; --text: #e3e7ee; --muted: #9aa3b2; --border: #2e3542;
+    --accent: #7ea2ff; --accent-soft: #24304a; --code-bg: #151a21;
+    --high: #ff8a80; --high-soft: #3a1f1f; --medium: #ffb74d; --medium-soft: #3a2c19;
+    --low: #81b9e6; --low-soft: #1c2c3a; --info: #9aa3b2; --info-soft: #262b33;
+    --add: #1d3324; --del: #3a1f1f; --chg: #3a3419;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12151b; --surface: #1a1f27; --surface-2: #222833; --text: #e3e7ee; --muted: #9aa3b2; --border: #2e3542;
+  --accent: #7ea2ff; --accent-soft: #24304a; --code-bg: #151a21;
+  --high: #ff8a80; --high-soft: #3a1f1f; --medium: #ffb74d; --medium-soft: #3a2c19;
+  --low: #81b9e6; --low-soft: #1c2c3a; --info: #9aa3b2; --info-soft: #262b33;
+  --add: #1d3324; --del: #3a1f1f; --chg: #3a3419;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 24px 0; }
+header h1 { margin: 0; font-size: 20px; }
+header .meta { color: var(--muted); font-size: 13px; margin-top: 2px; word-break: break-all; }
+nav { display: flex; gap: 4px; margin-top: 12px; overflow-x: auto; }
+nav a { padding: 8px 14px; color: var(--muted); text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; font-weight: 500; }
+nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+nav a .n { background: var(--surface-2); border-radius: 10px; padding: 0 7px; font-size: 12px; margin-left: 4px; }
+main { padding: 20px 24px 48px; max-width: 1400px; margin: 0 auto; }
+section { display: none; } section.active { display: block; }
+h2 { font-size: 17px; margin: 24px 0 10px; } h2:first-child { margin-top: 0; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+.tile .v { font-size: 26px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.tile .l { color: var(--muted); font-size: 13px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 14px; min-width: 0; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .03em; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.bar { height: 8px; background: var(--accent); border-radius: 4px; min-width: 2px; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
+input[type=search], select { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 7px 10px; font: inherit; }
+input[type=search] { flex: 1 1 260px; min-width: 0; }
+label.chk { display: inline-flex; gap: 6px; align-items: center; color: var(--muted); }
+.chip { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; background: var(--surface-2); color: var(--muted); white-space: nowrap; }
+.sev-HIGH { background: var(--high-soft); color: var(--high); } .sev-MEDIUM { background: var(--medium-soft); color: var(--medium); }
+.sev-LOW { background: var(--low-soft); color: var(--low); } .sev-INFO { background: var(--info-soft); color: var(--info); }
+.lvl { background: var(--accent-soft); color: var(--accent); }
+.muted { color: var(--muted); } .small { font-size: 12px; }
+code, pre { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 12.5px; }
+pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px; padding: 10px; overflow: auto; margin: 6px 0; }
+.cls { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; background: var(--surface); }
+.cls > summary { cursor: pointer; padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+.cls > summary b { font-size: 15px; }
+.mrow { cursor: pointer; } .mrow:hover td { background: var(--surface-2); }
+.mname { font-weight: 600; font-family: ui-monospace, Consolas, monospace; font-size: 13px; word-break: break-all; }
+.detail td { background: var(--surface-2); }
+.actions li { margin: 2px 0; }
+.table-wrap { overflow-x: auto; }
+.cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cmp .side { min-width: 0; }
+.diff { background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px; overflow: auto; font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+.diff div { white-space: pre; padding: 0 8px; min-height: 1.45em; }
+.diff .d-del { background: var(--del); } .diff .d-add { background: var(--add); } .diff .d-gap { background: var(--surface-2); }
+.keep { color: var(--accent); font-weight: 600; }
+.rule h3 { margin: 0 0 4px; font-size: 15px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.ba { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ba .t { font-size: 12px; font-weight: 600; color: var(--muted); }
+.more { background: none; border: 1px solid var(--border); color: var(--accent); border-radius: 6px; padding: 4px 10px; cursor: pointer; font: inherit; margin-top: 6px; }
+.clickable { cursor: pointer; } .clickable:hover td { background: var(--surface-2); }
+.empty { color: var(--muted); padding: 20px; text-align: center; }
+.themebtn { float: right; background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 6px; padding: 4px 10px; cursor: pointer; font: inherit; }
+@media (max-width: 760px) {
+  header { padding: 12px 16px 0; } main { padding: 16px 16px 40px; }
+  .cmp, .ba { grid-template-columns: 1fr; }
+  .hide-sm { display: none; }
+}
+</style>
+</head>
+<body>
+<header>
+  <button class="themebtn" id="themeBtn" type="button">Theme</button>
+  <h1 id="title">Framework scan</h1>
+  <div class="meta" id="meta"></div>
+  <nav id="tabs">
+    <a href="#overview" data-tab="overview">Overview</a>
+    <a href="#catalog" data-tab="catalog">Library catalog <span class="n" id="n-catalog"></span></a>
+    <a href="#duplicates" data-tab="duplicates">Duplicates <span class="n" id="n-duplicates"></span></a>
+    <a href="#recommendations" data-tab="recommendations">Recommendations <span class="n" id="n-recs"></span></a>
+  </nav>
+</header>
+<main>
+  <section id="overview"></section>
+  <section id="catalog">
+    <div class="filters">
+      <input type="search" id="c-q" placeholder="Search class, method, description, step text, selector...">
+      <select id="c-role"><option value="">All class roles</option></select>
+      <select id="c-purpose"><option value="">All purposes</option></select>
+      <select id="c-pkg"><option value="">All packages</option></select>
+      <label class="chk"><input type="checkbox" id="c-unused"> Never called</label>
+      <label class="chk"><input type="checkbox" id="c-nodoc"> No Javadoc</label>
+      <label class="chk"><input type="checkbox" id="c-dup"> In a duplicate group</label>
+    </div>
+    <div class="muted small" id="c-count"></div>
+    <div id="c-list"></div>
+  </section>
+  <section id="duplicates">
+    <div class="filters">
+      <input type="search" id="d-q" placeholder="Search method, class, author...">
+      <select id="d-level"><option value="">All levels</option></select>
+    </div>
+    <div id="d-list"></div>
+  </section>
+  <section id="recommendations">
+    <div class="filters">
+      <input type="search" id="r-q" placeholder="Search message, class, method, file...">
+      <select id="r-sev"><option value="">All severities</option></select>
+      <select id="r-cat"><option value="">All categories</option></select>
+      <select id="r-rule"><option value="">All rules</option></select>
+      <select id="r-author"><option value="">All authors</option></select>
+    </div>
+    <div id="r-summary"></div>
+    <div id="r-list"></div>
+  </section>
+</main>
+<script id="scan-data" type="application/json">/*__DATA__*/</script>
+<script>
+(function () {
+  "use strict";
+  var D = JSON.parse(document.getElementById("scan-data").textContent);
+  var SEV = ["HIGH", "MEDIUM", "LOW", "INFO"];
+  var methods = [], byId = {}, dupOf = {};
+  D.classes.forEach(function (c) { c.methods.forEach(function (m) { m.cls = c; methods.push(m); byId[m.id] = m; }); });
+  D.duplicateGroups.forEach(function (g) { g.memberIds.forEach(function (id) { dupOf[id] = g; }); });
+  var rules = {}; D.rules.forEach(function (r) { rules[r.id] = r; });
+
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (ch) { return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[ch]; }); }
+  function $(id) { return document.getElementById(id); }
+  function el(html) { var t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstChild; }
+  function count(list, key) { var m = {}; list.forEach(function (x) { var k = key(x); if (k == null || k === "") return; m[k] = (m[k] || 0) + 1; }); return m; }
+  function sortedEntries(m) { return Object.keys(m).map(function (k) { return [k, m[k]]; }).sort(function (a, b) { return b[1] - a[1] || (a[0] < b[0] ? -1 : 1); }); }
+  function pct(a, b) { return b ? Math.round(100 * a / b) + "%" : "0%"; }
+  function author(m) { return m.authors && m.authors.length ? m.authors[0] : ""; }
+  function isUnused(m) {
+    if (m.stepText != null) return m.stepUsageCount === 0;
+    var a = m.annotations || [];
+    if (a.indexOf("Test") >= 0 || a.indexOf("Override") >= 0 || m.name === "main") return false;
+    if (a.some(function (x) { return x.indexOf("Before") === 0 || x.indexOf("After") === 0; })) return false;
+    return m.callCount === 0;
+  }
+  function options(select, values) { values.forEach(function (v) { var o = document.createElement("option"); o.value = v[0]; o.textContent = v[1] || v[0]; select.appendChild(o); }); }
+  function debounce(f) { var t; return function () { clearTimeout(t); t = setTimeout(f, 120); }; }
+  function loc(file, line) { return esc(file) + ":" + line; }
+
+  // ---------- theme ----------
+  (function () {
+    var saved = null; try { saved = localStorage.getItem("scan-theme"); } catch (e) {}
+    if (saved) document.documentElement.setAttribute("data-theme", saved);
+    $("themeBtn").addEventListener("click", function () {
+      var cur = document.documentElement.getAttribute("data-theme");
+      var dark = cur ? cur === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      var next = dark ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("scan-theme", next); } catch (e) {}
+    });
+  })();
+
+  // ---------- header + tabs ----------
+  $("title").textContent = D.projectName + " — scan report";
+  document.title = D.projectName + " scan";
+  $("meta").textContent = "Scanned " + D.scannedAt + " · " + D.filesScanned + " files · " + D.projectRoot
+    + (D.includePackages && D.includePackages.length ? " · packages: " + D.includePackages.join(", ") : " · all packages");
+  $("n-catalog").textContent = methods.length;
+  $("n-duplicates").textContent = D.duplicateGroups.length;
+  $("n-recs").textContent = D.findings.length;
+  function showTab() {
+    var tab = (location.hash || "#overview").slice(1);
+    if (!$(tab)) tab = "overview";
+    document.querySelectorAll("main > section").forEach(function (s) { s.classList.toggle("active", s.id === tab); });
+    document.querySelectorAll("#tabs a").forEach(function (a) { a.classList.toggle("active", a.dataset.tab === tab); });
+  }
+  window.addEventListener("hashchange", showTab);
+  showTab();
+
+  // ---------- overview ----------
+  (function () {
+    var documented = methods.filter(function (m) { return m.javadoc; }).length;
+    var unused = methods.filter(isUnused).length;
+    var inDup = D.duplicateGroups.reduce(function (s, g) { return s + g.memberIds.length; }, 0);
+    var removable = D.duplicateGroups.reduce(function (s, g) { return s + g.removableLines; }, 0);
+    var sev = count(D.findings, function (f) { return f.severity; });
+    var tiles = [
+      [D.classes.length, "Classes"], [methods.length, "Methods"], [pct(documented, methods.length), "Methods with Javadoc"],
+      [unused, "Never called"], [D.duplicateGroups.length, "Duplicate groups"], [inDup, "Methods in duplicates"],
+      [removable, "Lines removable"], [(sev.HIGH || 0), "High findings"], [D.findings.length, "All recommendations"]];
+    var html = "<h2>Summary</h2><div class='tiles'>" + tiles.map(function (t) {
+      return "<div class='tile'><div class='v'>" + esc(t[0]) + "</div><div class='l'>" + esc(t[1]) + "</div></div>"; }).join("") + "</div>";
+
+    function barTable(title, entries, link) {
+      if (!entries.length) return "<div class='card'><h2>" + esc(title) + "</h2><div class='empty'>Nothing to show.</div></div>";
+      var max = entries[0][1];
+      return "<div class='card'><h2>" + esc(title) + "</h2><table>" + entries.slice(0, 12).map(function (e) {
+        return "<tr" + (link ? " class='clickable' data-go='" + esc(link(e[0])) + "'" : "") + "><td>" + esc(e[0]) + "</td><td style='width:45%'><div class='bar' style='width:"
+          + Math.max(2, 100 * e[1] / max) + "%'></div></td><td class='num'>" + e[1] + "</td></tr>"; }).join("") + "</table></div>";
+    }
+    var roles = sortedEntries(count(D.classes, function (c) { return c.role; }));
+    var purposes = sortedEntries(count(methods, function (m) { return m.purpose; }));
+    var levels = sortedEntries(count(D.duplicateGroups, function (g) { return g.levelLabel; }));
+    var topRules = sortedEntries(count(D.findings, function (f) { return rules[f.ruleId].title; }));
+    var dupAuthors = sortedEntries(count(D.duplicateGroups.reduce(function (a, g) { return a.concat(g.memberIds.slice(1)); }, []),
+      function (id) { return author(byId[id]) || null; }));
+    var srcs = count(methods, function (m) { return {JAVADOC: "From Javadoc", STEP: "From step text + code", CODE: "Generated from code", NAME: "Generated from name only"}[m.descriptionSource]; });
+    html += "<div class='grid2' style='margin-top:16px'>"
+      + barTable("Classes by role", roles, function (k) { return "catalog|role|" + k; })
+      + barTable("Methods by purpose", purposes, function (k) { return "catalog|purpose|" + k; })
+      + barTable("Duplicate groups by level", levels, function (k) { return "duplicates|level|" + k; })
+      + barTable("Top recommendations", topRules, null)
+      + barTable("Where descriptions come from", sortedEntries(srcs), null)
+      + (dupAuthors.length ? barTable("Duplicate copies by author", dupAuthors, null) : "")
+      + "</div>";
+    if (D.parseErrors && D.parseErrors.length) {
+      html += "<div class='card'><h2>Files that could not be parsed (" + D.parseErrors.length + ")</h2><ul class='small'>"
+        + D.parseErrors.map(function (e) { return "<li>" + esc(e) + "</li>"; }).join("") + "</ul></div>";
+    }
+    $("overview").innerHTML = html;
+    $("overview").addEventListener("click", function (ev) {
+      var tr = ev.target.closest("[data-go]"); if (!tr) return;
+      var p = tr.dataset.go.split("|");
+      if (p[0] === "catalog") { $(p[1] === "role" ? "c-role" : "c-purpose").value = p[2]; renderCatalog(); }
+      if (p[0] === "duplicates") { $("d-level").value = p[2]; renderDuplicates(); }
+      location.hash = "#" + p[0];
+    });
+  })();
+
+  // ---------- catalog ----------
+  options($("c-role"), Object.keys(count(D.classes, function (c) { return c.role; })).sort().map(function (k) { return [k]; }));
+  options($("c-purpose"), Object.keys(count(methods, function (m) { return m.purpose; })).sort().map(function (k) { return [k]; }));
+  options($("c-pkg"), Object.keys(count(D.classes, function (c) { return c.packageName || "(default)"; })).sort().map(function (k) { return [k]; }));
+
+  function actionText(a) {
+    var t = a.target === "?" ? "<span class='muted'>(runtime value)</span>" : "<code>" + esc(a.target) + "</code>";
+    return "<span class='chip'>" + esc(a.type.replace("_", " ").toLowerCase()) + "</span> " + esc(a.verb) + " " + t + " <span class='muted small'>line " + a.line + "</span>";
+  }
+  function methodDetail(m) {
+    var g = dupOf[m.id];
+    return "<div><div class='small muted'>" + loc(m.file, m.beginLine) + " · " + m.lines() + "</div>"
+      + "<div><code>" + esc(m.signature) + "</code></div>"
+      + (m.stepText != null ? "<div style='margin-top:4px'><span class='chip'>" + esc(m.stepKeyword) + "</span> <code>" + esc(m.stepText) + "</code> · used in "
+          + (m.stepUsageCount < 0 ? "?" : m.stepUsageCount) + " feature step(s)</div>" : "")
+      + (g ? "<div style='margin-top:4px'>In duplicate group <a href='#duplicates' data-group='" + g.number + "'>#" + g.number + " (" + esc(g.levelLabel) + ")</a></div>" : "")
+      + (m.authors && m.authors.length ? "<div class='small muted'>Authors: " + esc(m.authors.join(", ")) + "</div>" : "")
+      + (m.actions.length ? "<div style='margin-top:6px'><b>What it does</b><ol class='actions'>" + m.actions.map(function (a) { return "<li>" + actionText(a) + "</li>"; }).join("") + "</ol></div>" : "")
+      + "<pre>" + esc(m.source) + "</pre></div>";
+  }
+  methods.forEach(function (m) { m.lines = function () { return (m.endLine - m.beginLine + 1) + " lines"; }; });
+
+  function renderCatalog() {
+    var q = $("c-q").value.trim().toLowerCase(), role = $("c-role").value, purpose = $("c-purpose").value, pkg = $("c-pkg").value;
+    var onlyUnused = $("c-unused").checked, onlyNoDoc = $("c-nodoc").checked, onlyDup = $("c-dup").checked;
+    var shown = 0, html = [];
+    D.classes.forEach(function (c, ci) {
+      if (role && c.role !== role) return;
+      if (pkg && (c.packageName || "(default)") !== pkg) return;
+      var classHit = q && (c.name.toLowerCase().indexOf(q) >= 0 || (c.javadoc || "").toLowerCase().indexOf(q) >= 0);
+      var ms = c.methods.filter(function (m) {
+        if (purpose && m.purpose !== purpose) return false;
+        if (onlyUnused && !isUnused(m)) return false;
+        if (onlyNoDoc && m.javadoc) return false;
+        if (onlyDup && !dupOf[m.id]) return false;
+        if (!q || classHit) return true;
+        var hay = (m.name + " " + m.description + " " + (m.stepText || "") + " " + m.signature + " "
+          + m.actions.map(function (a) { return a.target; }).join(" ")).toLowerCase();
+        return hay.indexOf(q) >= 0;
+      });
+      if (!ms.length) return;
+      shown += ms.length;
+      html.push("<details class='cls'" + (q || D.classes.length <= 15 ? " open" : "") + "><summary><b>" + esc(c.name) + "</b> <span class='chip'>" + esc(c.role)
+        + "</span> <span class='muted small'>" + esc(c.packageName) + " · " + esc(c.file) + " · " + ms.length + " method(s)</span>"
+        + (c.javadoc ? "<span class='small' style='flex-basis:100%'>" + esc(c.javadoc) + "</span>" : "") + "</summary>"
+        + "<div class='table-wrap'><table><thead><tr><th>Method</th><th>What it does</th><th class='hide-sm'>Purpose</th><th class='num'>Calls</th><th class='hide-sm'>Author</th></tr></thead><tbody>"
+        + ms.map(function (m) {
+          var calls = m.stepText != null ? (m.stepUsageCount < 0 ? "?" : m.stepUsageCount) + " <span class='muted small'>steps</span>" : m.callCount;
+          return "<tr class='mrow' data-id='" + esc(m.id) + "'><td><span class='mname'>" + esc(m.name) + "</span><div class='muted small'>(" + esc(m.parameterTypes.join(", ")) + ") → " + esc(m.returnType) + "</div></td>"
+            + "<td>" + esc(m.description) + (m.descriptionSource !== "JAVADOC" ? " <span class='chip' title='Generated by the scanner: no Javadoc'>generated</span>" : "")
+            + (dupOf[m.id] ? " <span class='chip lvl'>duplicate #" + dupOf[m.id].number + "</span>" : "")
+            + (isUnused(m) ? " <span class='chip sev-MEDIUM'>never called</span>" : "") + "</td>"
+            + "<td class='hide-sm'><span class='chip'>" + esc(m.purpose) + "</span></td><td class='num'>" + calls + "</td><td class='hide-sm small'>" + esc(author(m)) + "</td></tr>";
+        }).join("") + "</tbody></table></div></details>");
+    });
+    $("c-count").textContent = shown + " of " + methods.length + " methods";
+    $("c-list").innerHTML = html.length ? html.join("") : "<div class='empty'>No method matches the filters.</div>";
+  }
+  ["c-q"].forEach(function (id) { $(id).addEventListener("input", debounce(renderCatalog)); });
+  ["c-role", "c-purpose", "c-pkg", "c-unused", "c-nodoc", "c-dup"].forEach(function (id) { $(id).addEventListener("change", renderCatalog); });
+  $("c-list").addEventListener("click", function (ev) {
+    var link = ev.target.closest("[data-group]");
+    if (link) { $("d-q").value = ""; $("d-level").value = ""; renderDuplicates(); setTimeout(function () { var g = $("group-" + link.dataset.group); if (g) g.scrollIntoView(); }, 0); return; }
+    var tr = ev.target.closest(".mrow"); if (!tr) return;
+    var next = tr.nextElementSibling;
+    if (next && next.classList.contains("detail")) { next.remove(); return; }
+    var d = el("<tr class='detail'><td colspan='5'></td></tr>");
+    d.firstChild.innerHTML = methodDetail(byId[tr.dataset.id]);
+    tr.after(d);
+  });
+  renderCatalog();
+
+  // ---------- duplicates ----------
+  options($("d-level"), Object.keys(count(D.duplicateGroups, function (g) { return g.levelLabel; })).map(function (k) { return [k]; }));
+
+  function norm(line) { return line.trim().replace(/\s+/g, " "); }
+  function diff(a, b) {
+    var A = a.split("\n"), B = b.split("\n"), n = A.length, m = B.length, i, j;
+    var L = []; for (i = 0; i <= n; i++) { L.push(new Array(m + 1).fill(0)); }
+    for (i = n - 1; i >= 0; i--) for (j = m - 1; j >= 0; j--) L[i][j] = norm(A[i]) === norm(B[j]) ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+    var left = [], right = []; i = 0; j = 0;
+    while (i < n || j < m) {
+      if (i < n && j < m && norm(A[i]) === norm(B[j])) { left.push([A[i], ""]); right.push([B[j], ""]); i++; j++; }
+      else if (j < m && (i >= n || L[i][j + 1] >= L[i + 1][j])) { left.push(["", "d-gap"]); right.push([B[j], "d-add"]); j++; }
+      else { left.push([A[i], "d-del"]); right.push(["", "d-gap"]); i++; }
+    }
+    function render(rows) { return "<div class='diff'>" + rows.map(function (r) { return "<div class='" + r[1] + "'>" + esc(r[0]) + "</div>"; }).join("") + "</div>"; }
+    return [render(left), render(right)];
+  }
+  function compare(g, otherId) {
+    var a = byId[g.keepId], b = byId[otherId];
+    var pair = g.pairs.filter(function (p) { return (p.a === a.id && p.b === b.id) || (p.b === a.id && p.a === b.id); })[0];
+    var d = diff(a.source, b.source);
+    return "<div class='small muted' style='margin:8px 0 4px'>" + (pair ? esc(pair.level.replace("_", " ").toLowerCase()) + " · similarity " + Math.round(pair.similarity * 100) + "%" : "linked through other members of the group")
+      + " · lines only on one side are highlighted</div><div class='cmp'><div class='side'><div class='small'><span class='keep'>Keep</span> " + esc(a.className + "." + a.name) + "</div>" + d[0]
+      + "</div><div class='side'><div class='small'>Replace " + esc(b.className + "." + b.name) + "</div>" + d[1] + "</div></div>";
+  }
+  function renderDuplicates() {
+    var q = $("d-q").value.trim().toLowerCase(), level = $("d-level").value;
+    var groups = D.duplicateGroups.filter(function (g) {
+      if (level && g.levelLabel !== level) return false;
+      if (!q) return true;
+      return g.memberIds.some(function (id) { var m = byId[id]; return (m.className + "." + m.name + " " + author(m) + " " + m.file).toLowerCase().indexOf(q) >= 0; });
+    });
+    if (!groups.length) { $("d-list").innerHTML = "<div class='empty'>" + (D.duplicateGroups.length ? "No group matches the filters." : "No duplicate methods found.") + "</div>"; return; }
+    $("d-list").innerHTML = groups.map(function (g) {
+      var keep = byId[g.keepId];
+      var others = g.memberIds.filter(function (id) { return id !== g.keepId; });
+      return "<div class='card' id='group-" + g.number + "'><h2 style='margin:0 0 4px'>#" + g.number + " <span class='chip lvl'>" + esc(g.levelLabel) + "</span> "
+        + esc(keep.name) + " <span class='muted small'>" + g.memberIds.length + " methods · about " + g.removableLines + " lines removable</span></h2>"
+        + "<div class='small muted'>" + esc(g.levelMeaning) + "</div>"
+        + "<p style='margin:8px 0'><span class='keep'>Keep " + esc(keep.className + "." + keep.name) + "</span> (" + esc(g.keepReason) + "). Replace the calls of the others with it"
+        + (g.level === "SAME_JOB" || g.level === "RENAMED" ? ", adding parameters for the values that differ." : ".") + "</p>"
+        + "<div class='table-wrap'><table><thead><tr><th></th><th>Method</th><th>What it does</th><th class='num'>Calls</th><th class='num'>Lines</th><th class='hide-sm'>Author</th><th class='hide-sm'>Location</th></tr></thead><tbody>"
+        + g.memberIds.map(function (id) { var m = byId[id];
+          return "<tr><td>" + (id === g.keepId ? "<span class='keep'>keep</span>" : "<span class='muted'>replace</span>") + "</td><td><span class='mname'>" + esc(m.className + "." + m.name) + "</span></td><td class='small'>" + esc(m.description)
+            + "</td><td class='num'>" + (m.stepText != null ? Math.max(0, m.stepUsageCount) : m.callCount) + "</td><td class='num'>" + (m.endLine - m.beginLine + 1) + "</td><td class='hide-sm small'>" + esc(author(m)) + "</td><td class='hide-sm small'>" + loc(m.file, m.beginLine) + "</td></tr>"; }).join("")
+        + "</tbody></table></div>"
+        + "<div class='filters' style='margin:10px 0 0'><label class='small muted'>Compare with</label><select data-cmp='" + g.number + "'>"
+        + others.map(function (id) { return "<option value='" + esc(id) + "'>" + esc(byId[id].className + "." + byId[id].name) + "</option>"; }).join("") + "</select></div>"
+        + "<div data-cmpview='" + g.number + "'>" + compare(g, others[0]) + "</div></div>";
+    }).join("");
+  }
+  $("d-q").addEventListener("input", debounce(renderDuplicates));
+  $("d-level").addEventListener("change", renderDuplicates);
+  $("d-list").addEventListener("change", function (ev) {
+    var s = ev.target.closest("[data-cmp]"); if (!s) return;
+    var g = D.duplicateGroups.filter(function (x) { return String(x.number) === s.dataset.cmp; })[0];
+    document.querySelector("[data-cmpview='" + g.number + "']").innerHTML = compare(g, s.value);
+  });
+  renderDuplicates();
+
+  // ---------- recommendations ----------
+  options($("r-sev"), SEV.filter(function (s) { return D.findings.some(function (f) { return f.severity === s; }); }).map(function (s) { return [s]; }));
+  options($("r-cat"), Object.keys(count(D.findings, function (f) { return rules[f.ruleId].category; })).sort().map(function (k) { return [k]; }));
+  options($("r-rule"), sortedEntries(count(D.findings, function (f) { return f.ruleId; })).map(function (e) { return [e[0], rules[e[0]].title + " (" + e[1] + ")"]; }));
+  options($("r-author"), Object.keys(count(D.findings, function (f) { return f.author; })).sort().map(function (k) { return [k]; }));
+  var PAGE = 25;
+  function renderRecs() {
+    var q = $("r-q").value.trim().toLowerCase(), sev = $("r-sev").value, cat = $("r-cat").value, rule = $("r-rule").value, au = $("r-author").value;
+    var list = D.findings.filter(function (f) {
+      var r = rules[f.ruleId];
+      if (sev && f.severity !== sev) return false;
+      if (cat && r.category !== cat) return false;
+      if (rule && f.ruleId !== rule) return false;
+      if (au && f.author !== au) return false;
+      if (q && (f.message + " " + f.className + " " + f.methodName + " " + f.file + " " + r.title).toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    });
+    var byRule = {}; list.forEach(function (f) { (byRule[f.ruleId] = byRule[f.ruleId] || []).push(f); });
+    var ids = Object.keys(byRule).sort(function (a, b) { return SEV.indexOf(rules[a].severity) - SEV.indexOf(rules[b].severity) || byRule[b].length - byRule[a].length; });
+    $("r-summary").innerHTML = ids.length ? "<div class='card'><div class='table-wrap'><table><thead><tr><th>Rule</th><th class='hide-sm'>Category</th><th>Severity</th><th class='num'>Findings</th></tr></thead><tbody>"
+      + ids.map(function (id) { var r = rules[id]; return "<tr class='clickable' data-rule='" + id + "'><td>" + esc(r.title) + "</td><td class='hide-sm'>" + esc(r.category) + "</td><td><span class='chip sev-" + r.severity + "'>" + r.severity + "</span></td><td class='num'>" + byRule[id].length + "</td></tr>"; }).join("")
+      + "</tbody></table></div></div>" : "";
+    $("r-list").innerHTML = ids.length ? ids.map(function (id) {
+      var r = rules[id], fs = byRule[id];
+      return "<div class='card rule' id='rule-" + id + "'><h3><span class='chip sev-" + r.severity + "'>" + r.severity + "</span>" + esc(r.title) + " <span class='muted small'>" + esc(r.category) + " · " + id + " · " + fs.length + " finding(s)</span></h3>"
+        + "<p style='margin:4px 0 8px'>" + esc(r.why) + "</p>"
+        + "<div class='ba'><div><div class='t'>Instead of</div><pre>" + esc(r.before) + "</pre></div><div><div class='t'>Write</div><pre>" + esc(r.after) + "</pre></div></div>"
+        + "<div class='table-wrap'><table><thead><tr><th>Where</th><th>Finding</th><th class='hide-sm'>Author</th></tr></thead><tbody data-rows='" + id + "'>" + rows(fs, PAGE) + "</tbody></table></div>"
+        + (fs.length > PAGE ? "<button class='more' type='button' data-more='" + id + "'>Show all " + fs.length + "</button>" : "") + "</div>";
+    }).join("") : "<div class='empty'>" + (D.findings.length ? "No finding matches the filters." : "No recommendations: the code follows every rule.") + "</div>";
+    $("r-list").dataset.ids = JSON.stringify(ids);
+    renderRecs.byRule = byRule;
+  }
+  function rows(fs, limit) {
+    return fs.slice(0, limit).map(function (f) {
+      return "<tr><td class='small'><span class='mname'>" + esc((f.className || "") + (f.methodName ? "." + f.methodName : "")) + "</span><div class='muted'>" + loc(f.file, f.line) + "</div></td><td>" + esc(f.message) + "</td><td class='hide-sm small'>" + esc(f.author || "") + "</td></tr>"; }).join("");
+  }
+  ["r-q"].forEach(function (id) { $(id).addEventListener("input", debounce(renderRecs)); });
+  ["r-sev", "r-cat", "r-rule", "r-author"].forEach(function (id) { $(id).addEventListener("change", renderRecs); });
+  $("r-list").addEventListener("click", function (ev) {
+    var b = ev.target.closest("[data-more]"); if (!b) return;
+    document.querySelector("[data-rows='" + b.dataset.more + "']").innerHTML = rows(renderRecs.byRule[b.dataset.more], 100000);
+    b.remove();
+  });
+  $("r-summary").addEventListener("click", function (ev) {
+    var tr = ev.target.closest("[data-rule]"); if (!tr) return;
+    var t = $("rule-" + tr.dataset.rule); if (t) t.scrollIntoView({behavior: "smooth"});
+  });
+  renderRecs();
+})();
+</script>
+</body>
+</html>
